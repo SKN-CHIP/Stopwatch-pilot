@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">StoperCHIP</string>
+    <string name="minutes">Minutes:</string>
+    <string name="seconds">Seconds:</string>
+    <string name="bluetooth_connect">Bluetooth Connnect</string>
+    <string name="_00">00</string>
+    <string name="colon">:</string>
+    <string name="auto_led_mode">\t\tAuto LED Mode</string>
+    <string name="stop_counter">Stop counter</string>
+    <string name="send_time">Send time</string>
+    <string name="return_string">Return</string>
+    <string name="led5_button_image">led5 button_image</string>
+    <string name="led7_button_image">led7_button_image</string>
+    <string name="led3_button_image">led3_button_image</string>
+    <string name="led1_button_image">led1_button_image</string>
+    <string name="led4_button_image">led4_button_image</string>
+    <string name="led2_button_image">led2_button_image</string>
+    <string name="led8_button_image">led8_button_image</string>
+    <string name="led6_button_image">led6_button_image</string>
+
+</resources>

@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+
+    android:background="@drawable/background"
+
+    >
+
+    <EditText
+        android:id="@+id/seconds"
+        android:layout_width="116dp"
+        android:layout_height="113dp"
+        android:layout_marginEnd="60dp"
+        android:background="@drawable/time_border"
+        android:ems="10"
+        android:inputType="numberSigned"
+        android:text="@string/_00"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="80sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.945"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.207"
+        android:autofillHints="Seconds passed to timer"
+        android:labelFor="@id/seconds"
+        android:maxLength="2"/>
+
+
+    <EditText
+        android:id="@+id/minutes"
+        android:layout_width="116dp"
+        android:layout_height="113dp"
+        android:layout_marginStart="60dp"
+        android:background="@drawable/time_border"
+        android:ems="10"
+        android:inputType="numberSigned"
+        android:text="@string/_00"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="80sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.054"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.207"
+        android:autofillHints="Minutes passed to timer"
+        android:maxLength="2"/>
+
+    <TextView
+        android:id="@+id/minutes_text"
+        android:layout_width="117dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="83dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/minutes"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/minutes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.244"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/seconds_text"
+        android:layout_width="121dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="83dp"
+        android:text="@string/seconds"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/seconds"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.762"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/bluetooth_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hapticFeedbackEnabled="false"
+        android:text="@string/bluetooth_connect"
+        android:textSize="15sp"
+        android:theme="@style/button1"
+        app:icon="@android:drawable/stat_sys_data_bluetooth"
+        app:iconPadding="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.932"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023" />
+
+    <Button
+        android:id="@+id/reset_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hapticFeedbackEnabled="false"
+        android:text="@string/stop_counter"
+        android:theme="@style/button1"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.067"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023" />
+
+    <Button
+        android:id="@+id/send_time_button"
+        android:layout_width="265dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="15dp"
+        android:hapticFeedbackEnabled="false"
+        android:text="@string/send_time"
+        android:textSize="30sp"
+        android:theme="@style/button1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="37dp"
+        android:layout_height="113dp"
+        android:text="@string/colon"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textColorLink="#000000"
+        android:textSize="80sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/seconds"
+        app:layout_constraintStart_toEndOf="@+id/minutes"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.207" />
+
+    <ImageButton
+        android:id="@+id/led6"
+        android:layout_width="82dp"
+        android:layout_height="92dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/led"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/led5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.754"
+        android:contentDescription="@string/led6_button_image" />
+
+    <ImageButton
+        android:id="@+id/led8"
+        android:layout_width="82dp"
+        android:layout_height="92dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/led"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/led5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.754"
+        android:contentDescription="@string/led8_button_image" />
+
+    <ImageButton
+        android:id="@+id/led2"
+        android:layout_width="82dp"
+        android:layout_height="92dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/led1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.58"
+        android:background="@drawable/led"
+        android:contentDescription="@string/led2_button_image" />
+
+    <ImageButton
+        android:id="@+id/led4"
+        android:layout_width="82dp"
+        android:layout_height="92dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/led1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.58"
+        android:background="@drawable/led"
+        android:contentDescription="@string/led4_button_image" />
+
+    <ImageButton
+        android:id="@+id/led1"
+        android:layout_width="82dp"
+        android:layout_height="92dp"
+        android:layout_marginStart="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.58"
+        android:background="@drawable/led"
+        android:contentDescription="@string/led1_button_image" />
+
+    <ImageButton
+        android:id="@+id/led3"
+        android:layout_width="82dp"
+        android:layout_height="92dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/led4"
+        app:layout_constraintHorizontal_bias="0.909"
+        app:layout_constraintStart_toEndOf="@+id/led1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.58"
+        android:background="@drawable/led"
+        android:contentDescription="@string/led3_button_image" />
+
+    <ImageButton
+        android:id="@+id/led7"
+        android:layout_width="82dp"
+        android:layout_height="92dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/led8"
+        app:layout_constraintHorizontal_bias="0.913"
+        app:layout_constraintStart_toEndOf="@+id/led5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.754"
+        android:background="@drawable/led"
+        android:contentDescription="@string/led7_button_image" />
+
+    <ImageButton
+        android:id="@+id/led5"
+        android:layout_width="82dp"
+        android:layout_height="92dp"
+        android:layout_marginStart="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.754"
+        android:background="@drawable/led"
+        android:contentDescription="@string/led5_button_image" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_auto_flag"
+        android:layout_width="250dp"
+        android:layout_height="61dp"
+        android:background="@drawable/time_border"
+        android:text="@string/auto_led_mode"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.857"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.976" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
