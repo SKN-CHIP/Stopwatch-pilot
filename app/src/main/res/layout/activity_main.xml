@@ -11,49 +11,51 @@
 
     >
 
+
     <EditText
         android:id="@+id/seconds"
         android:layout_width="116dp"
         android:layout_height="113dp"
-        android:layout_marginEnd="60dp"
+        android:autofillHints="Seconds passed to timer"
         android:background="@drawable/time_border"
         android:ems="10"
         android:inputType="numberSigned"
-        android:text="@string/_00"
+        android:labelFor="@id/seconds"
+        android:maxLength="2"
+        android:hint="@string/_00"
+        android:textColorHint="@color/white"
         android:textAlignment="center"
         android:textColor="@color/white"
-        android:textSize="80sp"
+        android:textSize="75sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.945"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.338"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintStart_toStartOf="@+id/textView"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.207"
-        android:autofillHints="Seconds passed to timer"
-        android:labelFor="@id/seconds"
-        android:maxLength="2"/>
-
+        app:layout_constraintVertical_bias="0.207" />
 
     <EditText
         android:id="@+id/minutes"
         android:layout_width="116dp"
         android:layout_height="113dp"
-        android:layout_marginStart="60dp"
+        android:autofillHints="Minutes passed to timer"
         android:background="@drawable/time_border"
         android:ems="10"
+        android:hint="@string/_00"
+        android:textColorHint="@color/white"
         android:inputType="numberSigned"
-        android:text="@string/_00"
+        android:maxLength="2"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="80sp"
+        android:textSize="75sp"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.054"
+        app:layout_constraintEnd_toStartOf="@+id/textView"
+        app:layout_constraintHorizontal_bias="0.981"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.207"
-        android:autofillHints="Minutes passed to timer"
-        android:maxLength="2"/>
+        app:layout_constraintVertical_bias="0.207" />
 
     <TextView
         android:id="@+id/minutes_text"
@@ -68,7 +70,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/minutes"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.244"
+        app:layout_constraintHorizontal_bias="0.227"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
@@ -92,32 +94,32 @@
 
     <Button
         android:id="@+id/bluetooth_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="145dp"
+        android:layout_height="55dp"
         android:hapticFeedbackEnabled="false"
         android:text="@string/bluetooth_connect"
         android:textSize="15sp"
         android:theme="@style/button1"
         app:icon="@android:drawable/stat_sys_data_bluetooth"
-        app:iconPadding="1dp"
+        app:iconPadding="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.932"
+        app:layout_constraintHorizontal_bias="0.922"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.023" />
 
     <Button
         android:id="@+id/reset_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="154dp"
+        android:layout_height="55dp"
         android:hapticFeedbackEnabled="false"
         android:text="@string/stop_counter"
-        android:theme="@style/button1"
         android:textSize="15sp"
+        android:theme="@style/button1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.067"
+        app:layout_constraintHorizontal_bias="0.06"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.023" />
@@ -147,8 +149,8 @@
         android:textColorLink="#000000"
         android:textSize="80sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/seconds"
-        app:layout_constraintStart_toEndOf="@+id/minutes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.207" />
 
@@ -156,117 +158,105 @@
         android:id="@+id/led6"
         android:layout_width="82dp"
         android:layout_height="92dp"
-        android:layout_marginStart="10dp"
         android:background="@drawable/led"
+        android:contentDescription="@string/led6_button_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/led5"
+        app:layout_constraintHorizontal_bias="0.358"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.754"
-        android:contentDescription="@string/led6_button_image" />
+        app:layout_constraintVertical_bias="0.754" />
 
     <ImageButton
         android:id="@+id/led8"
         android:layout_width="82dp"
         android:layout_height="92dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="24dp"
         android:background="@drawable/led"
+        android:contentDescription="@string/led8_button_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/led5"
+        app:layout_constraintHorizontal_bias="0.93"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.754"
-        android:contentDescription="@string/led8_button_image" />
+        app:layout_constraintVertical_bias="0.754" />
 
     <ImageButton
         android:id="@+id/led2"
         android:layout_width="82dp"
         android:layout_height="92dp"
-        android:layout_marginStart="10dp"
+        android:background="@drawable/led"
+        android:contentDescription="@string/led2_button_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/led1"
+        app:layout_constraintHorizontal_bias="0.358"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.58"
-        android:background="@drawable/led"
-        android:contentDescription="@string/led2_button_image" />
+        app:layout_constraintVertical_bias="0.58" />
 
     <ImageButton
         android:id="@+id/led4"
         android:layout_width="82dp"
         android:layout_height="92dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="24dp"
+        android:background="@drawable/led"
+        android:contentDescription="@string/led4_button_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/led1"
+        app:layout_constraintHorizontal_bias="0.93"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.58"
-        android:background="@drawable/led"
-        android:contentDescription="@string/led4_button_image" />
+        app:layout_constraintVertical_bias="0.58" />
 
     <ImageButton
         android:id="@+id/led1"
         android:layout_width="82dp"
         android:layout_height="92dp"
-        android:layout_marginStart="24dp"
+        android:background="@drawable/led"
+        android:contentDescription="@string/led1_button_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.072"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.58"
-        android:background="@drawable/led"
-        android:contentDescription="@string/led1_button_image" />
+        app:layout_constraintVertical_bias="0.58" />
 
     <ImageButton
         android:id="@+id/led3"
         android:layout_width="82dp"
         android:layout_height="92dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/led4"
-        app:layout_constraintHorizontal_bias="0.909"
-        app:layout_constraintStart_toEndOf="@+id/led1"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.58"
         android:background="@drawable/led"
-        android:contentDescription="@string/led3_button_image" />
+        android:contentDescription="@string/led3_button_image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.638"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.58" />
 
     <ImageButton
         android:id="@+id/led7"
         android:layout_width="82dp"
         android:layout_height="92dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/led8"
-        app:layout_constraintHorizontal_bias="0.913"
-        app:layout_constraintStart_toEndOf="@+id/led5"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.754"
         android:background="@drawable/led"
-        android:contentDescription="@string/led7_button_image" />
+        android:contentDescription="@string/led7_button_image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.638"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.754" />
 
     <ImageButton
         android:id="@+id/led5"
         android:layout_width="82dp"
         android:layout_height="92dp"
-        android:layout_marginStart="24dp"
+        android:background="@drawable/led"
+        android:contentDescription="@string/led5_button_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.072"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.754"
-        android:background="@drawable/led"
-        android:contentDescription="@string/led5_button_image" />
+        app:layout_constraintVertical_bias="0.754" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switch_auto_flag"

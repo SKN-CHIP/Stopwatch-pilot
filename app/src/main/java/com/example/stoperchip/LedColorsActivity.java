@@ -1,17 +1,10 @@
 package com.example.stoperchip;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.Serializable;
 
@@ -39,105 +32,57 @@ public class LedColorsActivity extends AppCompatActivity implements Serializable
         if(SendData == null)
             return;
 
-        return_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        return_button.setOnClickListener(v -> finish());
 
-                finish();
-            }
+        led_red.setOnClickListener(v -> {
+            SendData.setData2(2);
+            //blt send
+            finish_led_activity("red");
         });
 
-        led_red.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SendData.setData2(2);
-                //blt send
-                String color = "red";
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("result", color);
-                setResult(RESULT_OK, resultIntent);
-                finish();
-            }
+        led_off.setOnClickListener(v -> {
+            SendData.setData2(0);
+            //blt send
+            finish_led_activity("off");
         });
 
-        led_off.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SendData.setData2(0);
-                //blt send
-                String color = "off";
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("result", color);
-                setResult(RESULT_OK, resultIntent);
-                finish();
-            }
+        led_white.setOnClickListener(v -> {
+            SendData.setData2(1);
+            //blt send
+            finish_led_activity("white");
         });
 
-        led_white.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SendData.setData2(1);
-                //blt send
-                String color = "white";
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("result", color);
-                setResult(RESULT_OK, resultIntent);
-                finish();
-            }
+        led_purple.setOnClickListener(v -> {
+            SendData.setData2(6);
+            //blt send
+            finish_led_activity("purple");
         });
 
-        led_purple.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SendData.setData2(6);
-                //blt send
-                String color = "purple";
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("result", color);
-                setResult(RESULT_OK, resultIntent);
-                finish();
-            }
+        led_blue.setOnClickListener(v -> {
+            SendData.setData2(5);
+            //blt send
+            finish_led_activity("blue");
         });
 
-        led_blue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SendData.setData2(5);
-                //blt send
-                String color = "blue";
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("result", color);
-                setResult(RESULT_OK, resultIntent);
-                finish();
-            }
+        led_orange.setOnClickListener(v -> {
+            SendData.setData2(3);
+            //blt send
+            finish_led_activity("orange");
         });
 
-        led_orange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SendData.setData2(3);
-                //blt send
-                String color = "orange";
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("result", color);
-                setResult(RESULT_OK, resultIntent);
-                finish();
-            }
+        led_green.setOnClickListener(v -> {
+            SendData.setData2(4);
+            //blt send
+            finish_led_activity("green");
         });
 
-        led_green.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SendData.setData2(4);
-                //blt send
-                String color = "green";
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("result", color);
-                setResult(RESULT_OK, resultIntent);
-                finish();
-            }
-        });
+    }
 
+    private void finish_led_activity(String color){
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("result", color);
+        setResult(RESULT_OK, resultIntent);
+        finish();
     }
 
 }

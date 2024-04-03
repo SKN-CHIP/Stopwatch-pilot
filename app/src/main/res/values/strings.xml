@@ -2,7 +2,7 @@
     <string name="app_name">StoperCHIP</string>
     <string name="minutes">Minutes:</string>
     <string name="seconds">Seconds:</string>
-    <string name="bluetooth_connect">Bluetooth Connnect</string>
+    <string name="bluetooth_connect">Connnect</string>
     <string name="_00">00</string>
     <string name="colon">:</string>
     <string name="auto_led_mode">\t\tAuto LED Mode</string>
@@ -17,5 +17,13 @@
     <string name="led2_button_image">led2_button_image</string>
     <string name="led8_button_image">led8_button_image</string>
     <string name="led6_button_image">led6_button_image</string>
+
+    <string name="bluetooth_permission_title">Bluetooth permission</string>
+    <string name="bluetooth_permission_grant">Bluetooth permission is required by this App. Please grant in next dialog.</string>
+    <string name="bluetooth_permission_denied">Bluetooth permission was permanently denied. You have to enable permission \"%s\" in App settings.</string>
+
+    <string name="location_permission_title">Location permission</string>
+    <string name="location_permission_grant">This app does not use location information, but scanning for Bluetooth LE devices requires this permission. Please grant in next dialog.</string>
+    <string name="location_permission_denied">As location permission has not been granted, this app cannot scan for Bluetooth LE devices.</string>
 
 </resources>
