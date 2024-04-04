@@ -1,17 +1,21 @@
 package com.example.stoperchip;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.ComponentName;
-import android.content.Context;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.os.Handler;
+import android.text.InputFilter;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -22,30 +26,68 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import android.text.InputFilter;
+
 import java.io.Serializable;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements Serializable, SerialListener, ServiceConnection {
+public class MainActivity extends AppCompatActivity implements Serializable {
     final String TAG = "MainTAG";
-
-    private enum Connected { False, Pending, True }
-    private Connected connected = Connected.False;
-    private Button blt_connect, reset_counter, send_time;
     private ImageButton led1, led2, led3, led4, led5, led6, led7, led8;
-    private SwitchCompat auto_flag;
-    private EditText minutes, seconds;
-    private SendDataClass SendData = new SendDataClass();
-    private BluetoothAdapter blt_adapter = BluetoothAdapter.getDefaultAdapter();
-    private String device_address;
-    private boolean initialStart = true;
-    private SerialService service;
+    private final SendDataClass SendData = new SendDataClass();
+    private final BluetoothAdapter blt_adapter = BluetoothAdapter.getDefaultAdapter();
+    private BluetoothDevice blt_device;
+    private boolean connection = false;
+    SerialSocket socket;
+    Handler handler = new Handler();
+    private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
+        @SuppressLint("MissingPermission")
+        @Override
+        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+            //Connection established
+            if (status == BluetoothGatt.GATT_SUCCESS
+                    && newState == BluetoothProfile.STATE_CONNECTED) {
+                MainActivity.this.runOnUiThread(() -> Toast.makeText(MainActivity.this, "Connecting...", Toast.LENGTH_SHORT).show());
+                gatt.discoverServices();
+
+            } else if (status == BluetoothGatt.GATT_SUCCESS
+                    && newState == BluetoothProfile.STATE_DISCONNECTED) {
+                Log.d(TAG, "onConnectionStateChange: Disconnected");
+                Toast.makeText(getApplicationContext(), "Bluetooth disconnected", Toast.LENGTH_LONG).show();
+                //Handle a disconnect event
+            }
+        }
+
+        @Override
+        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+            Log.d(TAG, "onServicesDiscovered status = " + status);
+
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                socket = new SerialSocket(getApplicationContext(), blt_device);
+                socket.connectCharacteristics1(gatt);
+                socket.setGatt(gatt);
+                handler.postDelayed(() -> {
+                    MainActivity.this.runOnUiThread(() -> Toast.makeText(MainActivity.this, "Connected!", Toast.LENGTH_SHORT).show());
+                    connection = true;
+                }, 1000);
+
+            }
+            else {
+                Log.d(TAG, "onServicesDiscovered received: " + status);
+            }
+
+        }
+    };
 
     ActivityResultLauncher<Intent> startForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult o) {
             if(o == null || o.getResultCode() != RESULT_OK)
                 return;
+
+            if(!connection){
+                MainActivity.this.runOnUiThread(() -> Toast.makeText(MainActivity.this, "Bluetooth not connected!", Toast.LENGTH_SHORT).show());
+                return;
+            }
 
             if(o.getData() == null || o.getData().getStringExtra("result") == null)
                 return;
@@ -86,48 +128,61 @@ public class MainActivity extends AppCompatActivity implements Serializable, Ser
             switch (Objects.requireNonNull(o.getData().getStringExtra("result"))){
                 case "red":
                     led_color_set.setBackgroundResource(R.drawable.ledred);
+                    SendData.setData2(2);
                     break;
 
                 case "blue":
                     led_color_set.setBackgroundResource(R.drawable.ledblue);
+                    SendData.setData2(5);
                     break;
 
                 case "purple":
                     led_color_set.setBackgroundResource(R.drawable.ledpurple);
+                    SendData.setData2(6);
                     break;
 
                 case "orange":
                     led_color_set.setBackgroundResource(R.drawable.ledorange);
+                    SendData.setData2(3);
                     break;
 
                 case "white":
                     led_color_set.setBackgroundResource(R.drawable.ledwhite);
+                    SendData.setData2(1);
                     break;
 
                 case "green":
                     led_color_set.setBackgroundResource(R.drawable.ledgreen);
+                    SendData.setData2(4);
                     break;
 
                 case "off":
                     led_color_set.setBackgroundResource(R.drawable.led);
+                    SendData.setData2(0);
                     break;
 
                 default:
                     break;
             }
+            socket.send_data(SendData.create_sending_object());
         }
     });
     ActivityResultLauncher<Intent> bluetoothResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @SuppressLint("MissingPermission")
         @Override
         public void onActivityResult(ActivityResult o) {
             if(o == null || o.getResultCode() != 100)
                 return;
             if(o.getData() == null)
                 return;
-            device_address = o.getData().getStringExtra("blt_device");
-            set_bluetooth_connection();
+            String device_address = o.getData().getStringExtra("blt_device");
+            blt_device = blt_adapter.getRemoteDevice(device_address);
+            blt_device.connectGatt(getApplicationContext(), true, mGattCallback);
         }
     });
+
+    public MainActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,9 +190,9 @@ public class MainActivity extends AppCompatActivity implements Serializable, Ser
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        blt_connect = findViewById(R.id.bluetooth_button);
-        reset_counter = findViewById(R.id.reset_button);
-        send_time = findViewById(R.id.send_time_button);
+        Button blt_connect = findViewById(R.id.bluetooth_button);
+        Button reset_counter = findViewById(R.id.reset_button);
+        Button send_time = findViewById(R.id.send_time_button);
         led1 = findViewById(R.id.led1);
         led2 = findViewById(R.id.led2);
         led3 = findViewById(R.id.led3);
@@ -146,21 +201,24 @@ public class MainActivity extends AppCompatActivity implements Serializable, Ser
         led6 = findViewById(R.id.led6);
         led7 = findViewById(R.id.led7);
         led8 = findViewById(R.id.led8);
-        auto_flag = findViewById(R.id.switch_auto_flag);
-        minutes = findViewById(R.id.minutes);
-        seconds = findViewById(R.id.seconds);
+        SwitchCompat auto_flag = findViewById(R.id.switch_auto_flag);
+        EditText minutes = findViewById(R.id.minutes);
+        EditText seconds = findViewById(R.id.seconds);
         minutes.setFilters(new InputFilter[]{ new MinMaxFilter("00", "99")});
         seconds.setFilters(new InputFilter[]{ new MinMaxFilter("00", "59")});
 
         blt_connect.setOnClickListener(v -> {
+            if(connection){
+                socket.disconnect();
+                connection = false;
+                Toast.makeText(getApplicationContext(), "Disconnecting", Toast.LENGTH_LONG).show();
+            }
             if(blt_adapter == null){
-                Log.d(TAG, "onCreate: Bluetooth not available");
-                //show message "Bluetooth not available"
+                Toast.makeText(this, "Bluetooth not available on this device", Toast.LENGTH_LONG).show();
                 return;
             }
             if(!blt_adapter.isEnabled()){
-                Log.d(TAG, "onCreate: Bluetooth not enabled");
-                //show message "Bluetooth not enabled"
+                Toast.makeText(this, "Bluetooth not enabled", Toast.LENGTH_LONG).show();
                 return;
             }
             Intent Blt = new Intent(MainActivity.this, BluetoothActivity.class);
@@ -168,11 +226,37 @@ public class MainActivity extends AppCompatActivity implements Serializable, Ser
         });
 
         reset_counter.setOnClickListener(v -> {
-
+            if(connection){
+                SendData.setAddress(1);
+                SendData.setData1(0);
+                SendData.setData2(0);
+                socket.send_data(SendData.create_sending_object());
+            }
+            else
+                Toast.makeText(this, "Bluetooth not connected!", Toast.LENGTH_LONG).show();
         });
 
         send_time.setOnClickListener(v -> {
-
+            if(!connection){
+                Toast.makeText(this, "Bluetooth not connected!", Toast.LENGTH_LONG).show();
+                return;
+            }
+            String minutes_string = minutes.getText().toString();
+            String seconds_string = seconds.getText().toString();
+            if(minutes_string.isEmpty())
+                minutes_string = "0";
+            if(seconds_string.isEmpty())
+                seconds_string = "0";
+            int minutes_value = Integer.parseInt(minutes_string);
+            int seconds_value = Integer.parseInt(seconds_string);
+            if(minutes_value == 0 && seconds_value < 5){
+                Toast.makeText(this, "Set longer time!", Toast.LENGTH_LONG).show();
+                return;
+            }
+            SendData.setAddress(1);
+            SendData.setData1(minutes_value);
+            SendData.setData2(seconds_value);
+            socket.send_data(SendData.create_sending_object());
         });
 
         led1.setOnClickListener(v -> led_activity(1));
@@ -193,18 +277,21 @@ public class MainActivity extends AppCompatActivity implements Serializable, Ser
 
         auto_flag.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
+            if(!connection){
+                Toast.makeText(this, "Bluetooth not connected!", Toast.LENGTH_LONG).show();
+                return;
+            }
             if (isChecked) {
                 SendData.setAddress(3);
                 SendData.setData1(1);
                 SendData.setData2(1);
-                //bltsend
-                led1.setBackgroundResource(R.drawable.ledgreen);
+                socket.send_data(SendData.create_sending_object());
             }
             else {
                 SendData.setAddress(3);
                 SendData.setData1(1);
                 SendData.setData2(0);
-                led1.setBackgroundResource(R.drawable.ledpurple);
+                socket.send_data(SendData.create_sending_object());
             }
         });
 
@@ -221,65 +308,6 @@ public class MainActivity extends AppCompatActivity implements Serializable, Ser
         Intent Led = new Intent(MainActivity.this, LedColorsActivity.class);
         Led.putExtra("SendObjectToLed", SendData);
         startForResult.launch(Led);
-    }
-
-    @Override
-    public void onSerialConnect() {
-        connected = Connected.True;
-    }
-
-    @Override
-    public void onSerialConnectError(Exception e) {
-        Log.d(TAG, "onSerialConnectError: Disconnected");
-        service.disconnect();
-    }
-
-    @Override
-    public void onSerialIoError(Exception e) {
-        Log.d(TAG, "onSerialIoError: Disconnected");
-        service.disconnect();
-    }
-
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder binder) {
-        Log.d(TAG, "onServiceConnected: wchodzitu?");
-        service = ((SerialService.SerialBinder) binder).getService();
-        service.attach(this);
-
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-        Log.d(TAG, "onServiceDisconnected: Disconnected");
-    }
-
-    @Override
-    public void onBindingDied(ComponentName name) {
-        ServiceConnection.super.onBindingDied(name);
-    }
-
-    @Override
-    public void onNullBinding(ComponentName name) {
-        ServiceConnection.super.onNullBinding(name);
-    }
-
-    private void set_bluetooth_connection(){
-        this.bindService(new Intent(this, SerialService.class), this, Context.BIND_AUTO_CREATE);
-
-        if(service != null){
-            service.attach(this);
-            Log.d(TAG, "set_bluetooth_connection: nienull");
-        }
-        else
-            this.startService(new Intent(this, SerialService.class));
-
-        try {
-            BluetoothDevice device = blt_adapter.getRemoteDevice(device_address);
-            SerialSocket socket = new SerialSocket(getApplicationContext(), device);
-            service.connect(socket);
-        } catch (Exception e) {
-            onSerialConnectError(e);
-        }
     }
 
 }

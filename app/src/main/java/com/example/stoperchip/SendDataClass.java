@@ -2,7 +2,7 @@ package com.example.stoperchip;
 
 import java.io.Serializable;
 
-/**
+/*
  * addresses:
  * 1 - timer
  * 2 - diodes
@@ -39,22 +39,41 @@ import java.io.Serializable;
 
 public class SendDataClass implements Serializable {
     private int address, data1, data2, checksum;
-    private String send_data;
 
     public SendDataClass() {
         address = 0;
         data1 = 0;
         data2 = 0;
         checksum = 0;
-        send_data = null;
     }
 
     private void calculate_checksum(){
-        checksum = address + data1 + data2;
+        checksum = address + data1/10 + data1%10 + data2/10 + data2%10;
     }
 
-    private void create_sending_object(){
-        send_data = "" + address + data1 + data2 + checksum;
+    public String create_sending_object(){
+        String s_data1;
+        String s_data2;
+        if(address == 1){
+            s_data1 = String.valueOf(data1);
+            s_data2 = String.valueOf(data2);
+            if(data1 < 10)
+                s_data1 = "0" + data1;
+            if(data2 < 10)
+                s_data2 = "0" + data2;
+            calculate_checksum();
+            if(checksum < 10)
+                return address + s_data1 + s_data2 + "0" + checksum;
+            else
+                return address + s_data1 + s_data2 + checksum;
+        }
+        calculate_checksum();
+        s_data1 = String.valueOf(data1);
+        s_data2 = String.valueOf(data2);
+        if(checksum < 10)
+            return address + s_data1 + s_data2 + "0" + checksum;
+        else
+            return address + s_data1 + s_data2 + checksum;
     }
 
     public void setAddress(int address) {
@@ -78,10 +97,5 @@ public class SendDataClass implements Serializable {
         data1 = diode_address;
     }
 
-    public void resetData(){
-        address = 0;
-        data1 = 0;
-        data2 = 0;
-    }
 
 }
