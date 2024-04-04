@@ -5,12 +5,8 @@ import android.text.Spanned;
 
 public class MinMaxFilter implements InputFilter {
 
-    private int mIntMin, mIntMax;
-
-    public MinMaxFilter(int minValue, int maxValue) {
-        this.mIntMin = minValue;
-        this.mIntMax = maxValue;
-    }
+    private final int mIntMin;
+    private final int mIntMax;
 
     public MinMaxFilter(String minValue, String maxValue) {
         this.mIntMin = Integer.parseInt(minValue);
@@ -23,7 +19,7 @@ public class MinMaxFilter implements InputFilter {
             int input = Integer.parseInt(dest.toString() + source.toString());
             if (isInRange(mIntMin, mIntMax, input))
                 return null;
-        } catch (NumberFormatException nfe) { }
+        } catch (NumberFormatException ignored) { }
         return "";
     }
 

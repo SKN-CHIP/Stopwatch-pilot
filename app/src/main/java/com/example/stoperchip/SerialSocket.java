@@ -8,20 +8,17 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
-import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.util.Log;
-
-import androidx.core.content.ContextCompat;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -38,8 +35,8 @@ class SerialSocket extends BluetoothGattCallback {
     private static class DeviceDelegate {
         boolean connectCharacteristics(BluetoothGattService s) { return true; }
         // following methods only overwritten for Telit devices
-        void onDescriptorWrite(BluetoothGatt g, BluetoothGattDescriptor d, int status) { /*nop*/ }
-        void onCharacteristicChanged(BluetoothGatt g, BluetoothGattCharacteristic c) {/*nop*/ }
+        void onDescriptorWrite() { /*nop*/ }
+        void onCharacteristicChanged() {/*nop*/ }
         void onCharacteristicWrite(BluetoothGatt g, BluetoothGattCharacteristic c, int status) { /*nop*/ }
         boolean canWrite() { return true; }
         void disconnect() {/*nop*/ }
@@ -68,7 +65,6 @@ class SerialSocket extends BluetoothGattCallback {
     private static final String TAG = "SerialSocket";
 
     private final ArrayList<byte[]> writeBuffer;
-    private final IntentFilter pairingIntentFilter;
     private final BroadcastReceiver pairingBroadcastReceiver;
     private final BroadcastReceiver disconnectBroadcastReceiver;
 
@@ -80,7 +76,6 @@ class SerialSocket extends BluetoothGattCallback {
 
     private boolean writePending;
     private boolean canceled;
-    private boolean connected;
     private int payloadSize = DEFAULT_MTU-3;
 
     SerialSocket(Context context, BluetoothDevice device) {
@@ -89,13 +84,13 @@ class SerialSocket extends BluetoothGattCallback {
         this.context = context;
         this.device = device;
         writeBuffer = new ArrayList<>();
-        pairingIntentFilter = new IntentFilter();
+        IntentFilter pairingIntentFilter = new IntentFilter();
         pairingIntentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         pairingIntentFilter.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST);
         pairingBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                onPairingBroadcastReceive(context, intent);
+                onPairingBroadcastReceive(intent);
             }
         };
         disconnectBroadcastReceiver = new BroadcastReceiver() {
@@ -106,16 +101,8 @@ class SerialSocket extends BluetoothGattCallback {
         };
     }
 
-    String getName() {
-        return device.getName() != null ? device.getName() : device.getAddress();
-    }
-
     public void setGatt(BluetoothGatt gatt) {
         this.gatt = gatt;
-    }
-
-    public BluetoothGattCharacteristic getWriteCharacteristic() {
-        return writeCharacteristic;
     }
 
     void disconnect() {
@@ -138,7 +125,6 @@ class SerialSocket extends BluetoothGattCallback {
                 gatt.close();
             } catch (Exception ignored) {}
             gatt = null;
-            connected = false;
         }
         try {
             context.unregisterReceiver(pairingBroadcastReceiver);
@@ -154,13 +140,13 @@ class SerialSocket extends BluetoothGattCallback {
      * connect-success and most connect-errors are returned asynchronously to listener
      */
 
-    private void onPairingBroadcastReceive(Context context, Intent intent) {
+    private void onPairingBroadcastReceive(Intent intent) {
         // for ARM Mbed, Microbit, ... use pairing from Android bluetooth settings
         // for HM10-clone, ... pairing is initiated here
         BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
         if(device==null || !device.equals(this.device))
             return;
-        switch (intent.getAction()) {
+        switch (Objects.requireNonNull(intent.getAction())) {
             case BluetoothDevice.ACTION_PAIRING_REQUEST:
                 final int pairingVariant = intent.getIntExtra(BluetoothDevice.EXTRA_PAIRING_VARIANT, -1);
                 Log.d(TAG, "pairing request " + pairingVariant);
@@ -212,15 +198,11 @@ class SerialSocket extends BluetoothGattCallback {
     }
 
     private void connectCharacteristics2(BluetoothGatt gatt) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Log.d(TAG, "request max MTU");
-            if (!gatt.requestMtu(MAX_MTU))
+        Log.d(TAG, "request max MTU");
+        if (!gatt.requestMtu(MAX_MTU))
                 Log.d(TAG, "connectCharacteristics: error23");
-            // continues asynchronously in onMtuChanged
-        } else {
-            connectCharacteristics3(gatt);
-        }
-    }
+        // continues asynchronously in onMtuChanged
+}
 
     @Override
     public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
@@ -268,7 +250,7 @@ class SerialSocket extends BluetoothGattCallback {
 
     @Override
     public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-        delegate.onDescriptorWrite(gatt, descriptor, status);
+        delegate.onDescriptorWrite();
         if(canceled)
             return;
         if(descriptor.getCharacteristic() == readCharacteristic) {
@@ -280,7 +262,6 @@ class SerialSocket extends BluetoothGattCallback {
                 // before confirmed by this method, so receive data can be shown before device is shown as 'Connected'.
 //                onSerialConnect();
                 Log.d(TAG, "connectCharacteristics: error17");
-                connected = true;
                 Log.d(TAG, "connected");
             }
         }
@@ -293,7 +274,7 @@ class SerialSocket extends BluetoothGattCallback {
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
         if(canceled)
             return;
-        delegate.onCharacteristicChanged(gatt, characteristic);
+        delegate.onCharacteristicChanged();
         if(canceled)
             return;
         if(characteristic == readCharacteristic) { // NOPMD - test object identity
@@ -446,12 +427,11 @@ class SerialSocket extends BluetoothGattCallback {
 
     private class TelitDelegate extends DeviceDelegate {
         private BluetoothGattCharacteristic readCreditsCharacteristic, writeCreditsCharacteristic;
-        private int readCredits, writeCredits;
+        private int writeCredits;
 
         @Override
         boolean connectCharacteristics(BluetoothGattService gattService) {
             Log.d(TAG, "service telit tio 2.0");
-            readCredits = 0;
             writeCredits = 0;
             readCharacteristic = gattService.getCharacteristic(BLUETOOTH_LE_TIO_CHAR_RX);
             writeCharacteristic = gattService.getCharacteristic(BLUETOOTH_LE_TIO_CHAR_TX);
@@ -519,26 +499,6 @@ class SerialSocket extends BluetoothGattCallback {
         void disconnect() {
             readCreditsCharacteristic = null;
             writeCreditsCharacteristic = null;
-        }
-
-        private void grantReadCredits() {
-            final int minReadCredits = 16;
-            final int maxReadCredits = 64;
-            if(readCredits > 0)
-                readCredits -= 1;
-            if(readCredits <= minReadCredits) {
-                int newCredits = maxReadCredits - readCredits;
-                readCredits += newCredits;
-                byte[] data = new byte[] {(byte)newCredits};
-                Log.d(TAG, "grant read credits +"+newCredits+" ="+readCredits);
-                writeCreditsCharacteristic.setValue(data);
-                if (!gatt.writeCharacteristic(writeCreditsCharacteristic)) {
-                    if(connected)
-                        Log.d(TAG, "connectCharacteristics: error10");
-                    else
-                        Log.d(TAG, "connectCharacteristics: error9");
-                }
-            }
         }
 
     }

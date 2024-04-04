@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment;
 
 import java.io.Serializable;
 import java.util.Map;
-import java.util.Objects;
 
 public class BluetoothUtil {
 
